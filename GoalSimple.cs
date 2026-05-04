@@ -6,7 +6,7 @@ public class GoalSimple : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            GameManager.instance.WinGame();
+            GameManager.instance.TryWin();
         }
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public GameObject winPanel;
 
-    [Header("Game Stats")]
+    [Header("Game Settings")]
     public int lives = 3;
     public int score = 0;
     public int totalCoins = 0;
@@ -24,11 +25,15 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        UpdateUI();
         if (winPanel != null)
             winPanel.SetActive(false);
+
+        totalCoins = FindObjectsOfType<CoinSimple>().Length;
+
+        UpdateUI();
     }
 
+    // ---------------- LIFE ----------------
     public void LoseLife()
     {
         lives--;
@@ -39,19 +44,15 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Game Over");
+            RestartGame();
         }
     }
 
+    // ---------------- SCORE ----------------
     public void AddScore(int amount)
     {
         score += amount;
         UpdateUI();
-
-        if (score >= totalCoins)
-        {
-            WinGame();
-        }
     }
 
     void UpdateUI()
@@ -62,11 +63,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // ---------------- WIN CHECK ----------------
+    public void TryWin()
+    {
+        if (score >= totalCoins)
+        {
+            WinGame();
+        }
+        else
+        {
+            Debug.Log("Collect all coins first!");
+        }
+    }
+
     void WinGame()
     {
         Debug.Log("YOU WIN!");
 
         if (winPanel != null)
             winPanel.SetActive(true);
+
+        Time.timeScale = 0f;
+    }
+
+    // ---------------- RESTART ----------------
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
